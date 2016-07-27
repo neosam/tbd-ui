@@ -1,0 +1,21 @@
+<div class="panel panel-default">
+    <div class="panel-heading">Currently active tasks</div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Deadline</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="entry in mv.entries">
+            <td>{{entry.title}}</td>
+            <td>{{entry.deadline}}</td>
+            <td>
+                <span class="glyphicon glyphicon-ok" title="Finish Task"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

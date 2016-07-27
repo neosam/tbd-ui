@@ -1,3 +1,4 @@
-define([], function() {
-
-});
+(function() {
+    angular
+        .module("tbd", []);
+})();
