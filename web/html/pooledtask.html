@@ -1,0 +1,26 @@
+<div class="panel panel-default">
+    <div class="panel-heading">Tasks in pool</div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Days to complete</th>
+            <th>Propability</th>
+            <th>Cool down</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="entry in mv.entries">
+            <td >{{entry.title}}</td>
+            <td>{{entry.daysToComplete}}</td>
+            <td>{{entry.propability}}</td>
+            <td>{{entry.coolDown}}</td>
+            <td>
+                <span class="glyphicon glyphicon-pencil" title="Edit task"></span>
+                <span class="glyphicon glyphicon-trash" title="Delete task"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
