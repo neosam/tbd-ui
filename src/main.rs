@@ -1,7 +1,8 @@
 #[macro_use] extern crate nickel;
 #[macro_use] extern crate json;
+extern crate rustc_serialize;
 
-use nickel::{Nickel, HttpRouter};
+use nickel::{Nickel, HttpRouter, JsonBody};
 use nickel::StaticFilesHandler;
 
 fn get_active_tasks() -> json::JsonValue {
@@ -17,6 +18,14 @@ fn get_active_tasks() -> json::JsonValue {
     ]
 }
 
+#[derive(RustcDecodable, RustcEncodable)]
+struct NewActiveTask {
+    title: String,
+    description: String,
+    factor: f32,
+    due_until: i32
+}
+
 fn main() {
     let mut server = Nickel::new();
 
@@ -25,6 +34,11 @@ fn main() {
     server.get("/active_tasks", middleware! { | req, res |
         let actives = get_active_tasks();
         json::stringify_pretty(actives, 2)
+    });
+    server.post("/add_active_task", middleware! { | req, res |
+        let person = req.json_as::<NewActiveTask>().unwrap();
+        print!("title: {}\n", person.title);
+        "true"
     });
     server.utilize(StaticFilesHandler::new("web/"));
 

@@ -6,3 +6,4 @@ authors = ["Simon Goller <neosam+github@posteo.de>"]
 [dependencies]
 nickel = "*"
 json = "0.10.0"
+rustc-serialize = "0.3"

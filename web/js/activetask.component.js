@@ -13,14 +13,31 @@
             controllerAs: 'mv',
             controller: function () {
                 var mv = this;
-                mv.entries = [
-                    {title: "Klo putzen", deadline: "2016-12-12"},
-                    {title: "Boden wischen", deadline: "2016-12-11"},
-                    {title: "Game of Thrones schauen", deadline: "2016-11-30"},
-                ];
+                mv.entries = [];
+                mv.addActiveTask = addActiveTask;
+                mv.addTask = {
+                    title: '',
+                    description: '',
+                    factor: 1,
+                    due_until: 3
+                };
+
                 dataservice.getActiveTasks()
                     .then(handleActiveTasks)
                     .catch(activeTaskLoadFailed);
+
+                function addActiveTask() {
+                    dataservice.addActiveTask(mv.addTask)
+                            .then(handleAddActiveTaskSuccess)
+                            .catch(handleAddActiveTaskFail);
+
+                    function handleAddActiveTaskSuccess(data) {
+                        console.log('success');
+                    }
+                    function handleAddActiveTaskFail() {
+                        console.log('failed');
+                    }
+                }
 
                 function handleActiveTasks(data) {
                     mv.entries = data.data;
