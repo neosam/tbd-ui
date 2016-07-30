@@ -25,10 +25,14 @@
                     due_days: 3
                 };
                 mv.addPooledTask = addPooledTask;
+                loadPooledTasks();
 
-                dataservice.getPooledTasks()
-                    .then(handlePooledTasks)
-                    .catch(handlePooledTasksFailed);
+
+                function loadPooledTasks() {
+                    dataservice.getPooledTasks()
+                        .then(handlePooledTasks)
+                        .catch(handlePooledTasksFailed);
+                }
 
 
                 function handlePooledTasks(data) {
@@ -45,6 +49,8 @@
 
                     function handleAddPooledTaskSuccess() {
                         console.log("success");
+                        loadPooledTasks();
+                        $('#myModal').modal('hide');
                     }
                     function handleAddPooledTaskFail() {
                         console.log("failed");

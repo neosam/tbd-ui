@@ -21,10 +21,14 @@
                     factor: 1,
                     due_until: 3
                 };
+                loadTasks();
 
-                dataservice.getActiveTasks()
-                    .then(handleActiveTasks)
-                    .catch(activeTaskLoadFailed);
+
+                function loadTasks() {
+                    dataservice.getActiveTasks()
+                        .then(handleActiveTasks)
+                        .catch(activeTaskLoadFailed);
+                }
 
                 function addActiveTask() {
                     dataservice.addActiveTask(mv.addTask)
@@ -33,6 +37,8 @@
 
                     function handleAddActiveTaskSuccess(data) {
                         console.log('success');
+                        loadTasks();
+                        $('#myPoolModal').modal('hide');
                     }
                     function handleAddActiveTaskFail() {
                         console.log('failed');
