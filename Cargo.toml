@@ -8,3 +8,4 @@ nickel = "*"
 rustc-serialize = "0.3"
 tbd = { git = "https://github.com/neosam/tbd.git", branch = "0.2" }
 time = "0.1"
+rand = "0.3"

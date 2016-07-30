@@ -3,6 +3,7 @@
 extern crate rustc_serialize;
 extern crate tbd;
 extern crate time;
+extern crate rand;
 
 use nickel::{Nickel, HttpRouter, JsonBody};
 use nickel::StaticFilesHandler;
@@ -12,6 +13,7 @@ use tbd::task::{ActiveTask, PooledTask, TaskStatTrait};
 use tbd::tasklog::TaskLog;
 use std::sync::{Arc, Mutex};
 use time::{Tm, Duration};
+use rand::StdRng;
 
 fn get_active_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
     let active_tasks = task_stat.all_actives().unwrap_or(Vec::<ActiveTask>::new());
@@ -90,6 +92,7 @@ fn main() {
     let tasklog_add_active = tasklog_active_tasks.clone();
     let tasklog_pooled_tasks = tasklog_active_tasks.clone();
     let tasklog_add_pooled = tasklog_active_tasks.clone();
+    let tasklog_pick_actives = tasklog_active_tasks.clone();
 
     server.get("/hello", middleware!("Hello World"));
     server.get("/hello2", middleware!("Hello World2"));
@@ -123,6 +126,12 @@ fn main() {
             new_p_task.cool_down,
             new_p_task.due_days
         ).unwrap();
+        "true"
+    });
+
+    server.get("/pick_actives", middleware! { | req, res |
+        let mut rng = StdRng::new().unwrap();
+        tasklog_pick_actives.lock().unwrap().activate(&mut rng).unwrap();
         "true"
     });
 

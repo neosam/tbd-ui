@@ -10,7 +10,9 @@
             addActiveTask: addActiveTask,
 
             getPooledTasks: getPooledTasks,
-            addPooledTask: addPooledTask
+            addPooledTask: addPooledTask,
+
+            pickActives: pickActives
         };
 
         function getActiveTasks() {
@@ -27,6 +29,10 @@
         }
         function addPooledTask(pTask) {
             return $http.post('/add_pooled_task', pTask);
+        }
+
+        function pickActives() {
+            return $http.get('/pick_actives');
         }
     }
 

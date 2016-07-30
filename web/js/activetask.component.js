@@ -15,6 +15,7 @@
                 var mv = this;
                 mv.entries = [];
                 mv.addActiveTask = addActiveTask;
+                mv.pickActives = pickActives;
                 mv.addTask = {
                     title: '',
                     description: '',
@@ -42,6 +43,18 @@
                     }
                     function handleAddActiveTaskFail() {
                         console.log('failed');
+                    }
+                }
+                function pickActives() {
+                    dataservice.pickActives()
+                        .then(handlePickActivesSuccess)
+                        .catch(handlePickActivesFail);
+
+                    function handlePickActivesSuccess() {
+                        loadTasks();
+                    }
+                    function handlePickActivesFail() {
+                        console.log("failed");
                     }
                 }
 
