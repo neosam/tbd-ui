@@ -16,14 +16,15 @@ use time::{Tm, Duration};
 fn get_active_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
     let active_tasks = task_stat.all_actives().unwrap_or(Vec::<ActiveTask>::new());
     let mut res = Vec::new();
+
+    let now = time::now();
+
     for a_task in active_tasks {
-        let due_date = format!("{}-{}-{}",
-                               a_task.due.tm_year + 1900,
-                               a_task.due.tm_mon + 1,
-                               a_task.due.tm_mday);
+        let diff = a_task.due - now;
+
         res.push(SendActiveTask {
             title: a_task.task.title,
-            due_date: due_date
+            due_date: diff.num_days() as i16
         });
     };
     json::encode(&res).unwrap()
@@ -69,7 +70,7 @@ struct NewPooledTask {
 #[derive(Clone, RustcDecodable, RustcEncodable)]
 struct SendActiveTask {
     title: String,
-    due_date: String
+    due_date: i16
 }
 
 #[derive(Clone, RustcDecodable, RustcEncodable)]
