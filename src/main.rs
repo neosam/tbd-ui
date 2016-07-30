@@ -40,22 +40,27 @@ fn buildLog(task_log: &IOLog<TaskLogEntry>) -> String {
     let mut i = 0;
     for entry in iter {
         print!("Process {:?}\n", entry);
+        let timestamp = entry.timestamp.to_timespec().sec;
         res.push(match entry.action {
             TaskAction::ScheduleTask(ref a_task) => LogReply {
                 action: "schedule".to_string(),
-                details: format!("{:?}", a_task)
+                details: format!("{:?}", a_task),
+                timestamp: timestamp
             },
             TaskAction::PoolTask(ref p_task) => LogReply {
                 action: "pool".to_string(),
-                details: format!("{:?}", p_task)
+                details: format!("{:?}", p_task),
+                timestamp: timestamp
             },
             TaskAction::CompleteTask(ref a_task) => LogReply {
                 action: "complete".to_string(),
-                details: format!("{:?}", a_task)
+                details: format!("{:?}", a_task),
+                timestamp: timestamp
             },
             TaskAction::ActivateTask(ref a_tasks) => LogReply {
                 action: "activate".to_string(),
-                details: format!("{:?}", a_tasks)
+                details: format!("{:?}", a_tasks),
+                timestamp: timestamp
             }
         });
         i += 1;
@@ -88,7 +93,8 @@ fn get_pooled_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
 #[derive(RustcDecodable, RustcEncodable)]
 struct LogReply {
     action: String,
-    details: String
+    details: String,
+    timestamp: i64
 }
 
 

@@ -3,12 +3,14 @@
     <table class="table">
         <thead>
         <tr>
+            <th>Timestamp</th>
             <th>Action</th>
             <th>Detail</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="entry in mv.entries">
+            <td>{{entry.printTimestamp}}</td>
             <td>{{entry.action}}</td>
             <td>{{entry.details}}</td>
         </tr>

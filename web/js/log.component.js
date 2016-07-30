@@ -27,7 +27,18 @@
 
 
                 function handleLogLoad(data) {
-                    mv.entries = data.data;
+                    mv.entries = $.each(data.data, function (i, item) {
+                        var date = new Date(item.timestamp * 1000);
+                        var str =
+                            (date.getYear() + 1900) + "-" +
+                            (date.getMonth() + 1) + "-" +
+                            (date.getDate()) + " " +
+                            date.getHours() + ":" +
+                            date.getMinutes() + ":" +
+                            date.getSeconds();
+                        item.printTimestamp = str;
+                        return item;
+                    });
                 }
                 function handleLogLoadFailed() {
                     console.log("Error when loading log");
