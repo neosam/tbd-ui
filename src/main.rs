@@ -84,6 +84,11 @@ struct SendPooledTask {
     cooling_until: i16
 }
 
+#[derive(Clone, RustcDecodable, RustcEncodable)]
+struct TitleOnly {
+    title: String
+}
+
 fn main() {
     let mut server = Nickel::new();
     let mut tasklog = TaskLog::new(".tbd".to_string());
@@ -93,6 +98,7 @@ fn main() {
     let tasklog_pooled_tasks = tasklog_active_tasks.clone();
     let tasklog_add_pooled = tasklog_active_tasks.clone();
     let tasklog_pick_actives = tasklog_active_tasks.clone();
+    let tasklog_finish = tasklog_active_tasks.clone();
 
     server.get("/hello", middleware!("Hello World"));
     server.get("/hello2", middleware!("Hello World2"));
@@ -132,6 +138,12 @@ fn main() {
     server.get("/pick_actives", middleware! { | req, res |
         let mut rng = StdRng::new().unwrap();
         tasklog_pick_actives.lock().unwrap().activate(&mut rng).unwrap();
+        "true"
+    });
+
+    server.post("/finish", middleware! { | req, res |
+        let obj = req.json_as::<TitleOnly>().unwrap();
+        tasklog_finish.lock().unwrap().mark_done(obj.title);
         "true"
     });
 

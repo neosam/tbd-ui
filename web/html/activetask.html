@@ -58,7 +58,8 @@
             <td>{{entry.title}}</td>
             <td>{{entry.due_date}}</td>
             <td>
-                <span class="glyphicon glyphicon-ok" title="Finish Task"></span>
+                <span class="glyphicon glyphicon-ok" title="Finish Task"
+                        ng-click="mv.finishTask(entry)"></span>
             </td>
         </tr>
         </tbody>
