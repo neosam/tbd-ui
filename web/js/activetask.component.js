@@ -73,7 +73,18 @@
                 }
 
                 function handleActiveTasks(data) {
-                    mv.entries = data.data;
+                    mv.entries = $.each(data.data, function(i, item) {
+                        if (item.due_date < 0) {
+                            item.rowclass = "danger";
+                        } else if (item.due_date < 3) {
+                            item.rowclass = "warning";
+                        } else if (item.due_date < 8) {
+                            item.rowclass = "info";
+                        } else {
+                            item.rowclass = "";
+                        }
+                        return item;
+                    })
                 }
                 function activeTaskLoadFailed() {
                     console.log("Error when loading active tasks");
