@@ -3,7 +3,7 @@
     angular.module('tbd')
         .directive('log', Log);
 
-    Loo.$inject = ['dataservice']
+    Log.$inject = ['dataservice']
 
     function Log(dataservice) {
         return {
@@ -14,6 +14,7 @@
             controller: function () {
                 var mv = this;
                 mv.entries = [];
+                mv.revert = revert;
 
                 loadLog();
 
@@ -23,8 +24,6 @@
                         .then(handleLogLoad)
                         .catch(handleLogLoadFailed);
                 }
-
-
 
                 function handleLogLoad(data) {
                     mv.entries = $.each(data.data, function (i, item) {
@@ -43,7 +42,22 @@
                 function handleLogLoadFailed() {
                     console.log("Error when loading log");
                 }
+
+            function revert(entry) {
+                dataservice.revert(entry.hash)
+                    .then(revertSuccess)
+                    .catch(revertFail);
+
+                function revertSuccess() {
+                    console.log("success");
+                    location.reload();
+                }
+                function revertFail() {
+                    console.log("fail");
+                }
             }
+        }
+
         }
     }
 

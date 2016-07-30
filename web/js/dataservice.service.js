@@ -15,7 +15,8 @@
             pickActives: pickActives,
             finishTask: finishTask,
 
-            getLog: getLog
+            getLog: getLog,
+            revert: revert
         };
 
         function getActiveTasks() {
@@ -43,6 +44,9 @@
 
         function getLog() {
             return $http.get('/log');
+        }
+        function revert(hash) {
+            return $http.get('/revert/' + hash);
         }
     }
 

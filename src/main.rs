@@ -12,10 +12,11 @@ use tbd::{task, tasklog};
 use tbd::task::{ActiveTask, PooledTask, TaskStatTrait};
 use tbd::tasklog::{TaskLog, TaskLogEntry, TaskAction};
 use tbd::iolog::IOLog;
-use tbd::log::LogIteratorRef;
+use tbd::log::{Log, LogIteratorHash};
 use std::sync::{Arc, Mutex};
 use time::{Tm, Duration};
 use rand::StdRng;
+use tbd::hash::Hash;
 
 fn get_active_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
     let active_tasks = task_stat.all_actives().unwrap_or(Vec::<ActiveTask>::new());
@@ -35,29 +36,34 @@ fn get_active_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
 }
 
 fn buildLog(task_log: &IOLog<TaskLogEntry>) -> String {
-    let iter = LogIteratorRef::from_log(task_log);
+    let iter = LogIteratorHash::from_log(task_log);
     let mut res = Vec::<LogReply>::new();
     let mut i = 0;
-    for entry in iter {
+    for hash in iter {
+        let entry = task_log.get(hash).unwrap();
         print!("Process {:?}\n", entry);
         let timestamp = entry.timestamp.to_timespec().sec;
         res.push(match entry.action {
             TaskAction::ScheduleTask(ref a_task) => LogReply {
+                hash: hash.as_string(),
                 action: "schedule".to_string(),
                 details: format!("{:?}", a_task),
                 timestamp: timestamp
             },
             TaskAction::PoolTask(ref p_task) => LogReply {
+                hash: hash.as_string(),
                 action: "pool".to_string(),
                 details: format!("{:?}", p_task),
                 timestamp: timestamp
             },
             TaskAction::CompleteTask(ref a_task) => LogReply {
+                hash: hash.as_string(),
                 action: "complete".to_string(),
                 details: format!("{:?}", a_task),
                 timestamp: timestamp
             },
             TaskAction::ActivateTask(ref a_tasks) => LogReply {
+                hash: hash.as_string(),
                 action: "activate".to_string(),
                 details: format!("{:?}", a_tasks),
                 timestamp: timestamp
@@ -92,6 +98,7 @@ fn get_pooled_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
 
 #[derive(RustcDecodable, RustcEncodable)]
 struct LogReply {
+    hash: String,
     action: String,
     details: String,
     timestamp: i64
@@ -147,6 +154,7 @@ fn main() {
     let tasklog_pick_actives = tasklog_active_tasks.clone();
     let tasklog_finish = tasklog_active_tasks.clone();
     let tasklog_log = tasklog_active_tasks.clone();
+    let tasklog_revert = tasklog_active_tasks.clone();
 
     server.get("/hello", middleware!("Hello World"));
     server.get("/hello2", middleware!("Hello World2"));
@@ -198,6 +206,15 @@ fn main() {
     server.get("/log", middleware! {
         let tasklog = tasklog_log.lock().unwrap();
         buildLog(&tasklog.log)
+    });
+
+    server.get("/revert/:hash", middleware! { | request |
+        let hash_str = request.param("hash");
+        let hash = Hash::from_string(hash_str.unwrap().to_string());
+        let mut tasklog = tasklog_revert.lock().unwrap();
+        tasklog.log.reset_head(&hash);
+        tasklog.load_head();
+        "true"
     });
 
     server.utilize(StaticFilesHandler::new("web/"));

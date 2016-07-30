@@ -10,7 +10,7 @@
         </thead>
         <tbody>
         <tr ng-repeat="entry in mv.entries">
-            <td>{{entry.printTimestamp}}</td>
+            <td><a ng-click="mv.revert(entry)" href="#">{{entry.printTimestamp}} </a> </td>
             <td>{{entry.action}}</td>
             <td>{{entry.details}}</td>
         </tr>
