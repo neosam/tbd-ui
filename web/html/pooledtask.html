@@ -67,7 +67,7 @@
         <tr ng-repeat="entry in mv.entries">
             <td >{{entry.title}}</td>
             <td>{{entry.due_days}}</td>
-            <td>{{entry.propability}}</td>
+            <td>{{entry.propability * 100 | number: 0}}%</td>
             <td>{{entry.cool_down}}</td>
             <td>{{entry.cooling_until}}</td>
             <td>
