@@ -1,21 +1,57 @@
 //define([], function() {
 (function() {
     angular.module('tbd')
-        .directive('pooled', function() {
-            return {
-                restrict: "E",
-                scope: {},
-                templateUrl: 'html/pooledtask.html',
-                controllerAs: 'mv',
-                controller: function () {
-                    var mv = this;
-                    mv.entries = [
-                        {title: "Klo putzen", daysToComplete: 3, propability: 0.7, coolDown: 4},
-                        {title: "Boden wischen", daysToComplete: 14, propability: 0.4, coolDown: 14},
-                        {title: "Game of Thrones schauen", daysToComplete: 1, propability: 1, coolDown: 0},
-                    ];
+        .directive('pooled', PooledTask);
+
+    PooledTask.$inject = ['dataservice'];
+    console.log("waa");
+
+    function PooledTask(dataservice) {
+        console.log("boo");
+        return {
+            restrict: "E",
+            scope: {},
+            templateUrl: 'html/pooledtask.html',
+            controllerAs: 'mv',
+            controller: function () {
+                var mv = this;
+                mv.entries = [];
+                mv.add_task = {
+                    title: '',
+                    description: '',
+                    factor: 1.0,
+                    propability: 0.5,
+                    cool_down: 3,
+                    due_days: 3
+                };
+                mv.addPooledTask = addPooledTask;
+
+                dataservice.getPooledTasks()
+                    .then(handlePooledTasks)
+                    .catch(handlePooledTasksFailed);
+
+
+                function handlePooledTasks(data) {
+                    mv.entries = data.data;
+                }
+                function handlePooledTasksFailed() {
+                    console.log("Error loading pooled tasks");
+                }
+
+                function addPooledTask() {
+                    dataservice.addPooledTask(mv.add_task)
+                        .then(handleAddPooledTaskSuccess)
+                        .catch(handleAddPooledTaskFail);
+
+                    function handleAddPooledTaskSuccess() {
+                        console.log("success");
+                    }
+                    function handleAddPooledTaskFail() {
+                        console.log("failed");
+                    }
                 }
             }
-        });
+        }
+    };
  })();
 //});

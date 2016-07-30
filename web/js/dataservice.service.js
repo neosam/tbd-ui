@@ -7,7 +7,10 @@
     function dataservice($http) {
         return {
             getActiveTasks: getActiveTasks,
-            addActiveTask: addActiveTask
+            addActiveTask: addActiveTask,
+
+            getPooledTasks: getPooledTasks,
+            addPooledTask: addPooledTask
         };
 
         function getActiveTasks() {
@@ -16,6 +19,14 @@
 
         function addActiveTask(aTask) {
             return $http.post('/add_active_task', aTask);
+        }
+
+
+        function getPooledTasks() {
+            return $http.get('/pooled_tasks');
+        }
+        function addPooledTask(pTask) {
+            return $http.post('/add_pooled_task', pTask);
         }
     }
 

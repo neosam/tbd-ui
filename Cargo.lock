@@ -5,6 +5,7 @@ dependencies = [
  "nickel 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-serialize 0.3.19 (registry+https://github.com/rust-lang/crates.io-index)",
  "tbd 0.2.0-alpha (git+https://github.com/neosam/tbd.git?branch=0.2)",
+ "time 0.1.35 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
