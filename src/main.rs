@@ -10,7 +10,9 @@ use nickel::StaticFilesHandler;
 use rustc_serialize::json;
 use tbd::{task, tasklog};
 use tbd::task::{ActiveTask, PooledTask, TaskStatTrait};
-use tbd::tasklog::TaskLog;
+use tbd::tasklog::{TaskLog, TaskLogEntry, TaskAction};
+use tbd::iolog::IOLog;
+use tbd::log::LogIteratorRef;
 use std::sync::{Arc, Mutex};
 use time::{Tm, Duration};
 use rand::StdRng;
@@ -32,6 +34,38 @@ fn get_active_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
     json::encode(&res).unwrap()
 }
 
+fn buildLog(task_log: &IOLog<TaskLogEntry>) -> String {
+    let iter = LogIteratorRef::from_log(task_log);
+    let mut res = Vec::<LogReply>::new();
+    let mut i = 0;
+    for entry in iter {
+        print!("Process {:?}\n", entry);
+        res.push(match entry.action {
+            TaskAction::ScheduleTask(ref a_task) => LogReply {
+                action: "schedule".to_string(),
+                details: format!("{:?}", a_task)
+            },
+            TaskAction::PoolTask(ref p_task) => LogReply {
+                action: "pool".to_string(),
+                details: format!("{:?}", p_task)
+            },
+            TaskAction::CompleteTask(ref a_task) => LogReply {
+                action: "complete".to_string(),
+                details: format!("{:?}", a_task)
+            },
+            TaskAction::ActivateTask(ref a_tasks) => LogReply {
+                action: "activate".to_string(),
+                details: format!("{:?}", a_tasks)
+            }
+        });
+        i += 1;
+        if i > 100 {
+            break;
+        }
+    }
+    json::encode(&res).unwrap()
+}
+
 fn get_pooled_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
     let pooled_tasks = task_stat.all_pooled().unwrap_or(Vec::<PooledTask>::new());
     let mut res = Vec::new();
@@ -50,6 +84,13 @@ fn get_pooled_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
     };
     json::encode(&res).unwrap()
 }
+
+#[derive(RustcDecodable, RustcEncodable)]
+struct LogReply {
+    action: String,
+    details: String
+}
+
 
 #[derive(RustcDecodable, RustcEncodable)]
 struct NewActiveTask {
@@ -99,6 +140,7 @@ fn main() {
     let tasklog_add_pooled = tasklog_active_tasks.clone();
     let tasklog_pick_actives = tasklog_active_tasks.clone();
     let tasklog_finish = tasklog_active_tasks.clone();
+    let tasklog_log = tasklog_active_tasks.clone();
 
     server.get("/hello", middleware!("Hello World"));
     server.get("/hello2", middleware!("Hello World2"));
@@ -145,6 +187,11 @@ fn main() {
         let obj = req.json_as::<TitleOnly>().unwrap();
         tasklog_finish.lock().unwrap().mark_done(obj.title);
         "true"
+    });
+
+    server.get("/log", middleware! {
+        let tasklog = tasklog_log.lock().unwrap();
+        buildLog(&tasklog.log)
     });
 
     server.utilize(StaticFilesHandler::new("web/"));

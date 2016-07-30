@@ -13,7 +13,9 @@
             addPooledTask: addPooledTask,
 
             pickActives: pickActives,
-            finishTask: finishTask
+            finishTask: finishTask,
+
+            getLog: getLog
         };
 
         function getActiveTasks() {
@@ -37,6 +39,10 @@
         }
         function finishTask(title) {
             return $http.post('/finish', {title: title});
+        }
+
+        function getLog() {
+            return $http.get('/log');
         }
     }
 
