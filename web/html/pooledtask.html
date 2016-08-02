@@ -69,7 +69,10 @@
             <td>{{entry.due_days}}</td>
             <td>{{entry.propability * 100 | number: 0}}%</td>
             <td>{{entry.cool_down}}</td>
-            <td>{{entry.cooling_until}}</td>
+            <td>
+                <span class="text-danger" ng-show="entry.cooling_until <= 0">Ready</span>
+                <span class="text-success" ng-show="entry.cooling_until > 0">{{entry.cooling_until}}</span>
+            </td>
             <td>
                 <span class="glyphicon glyphicon-pencil" title="Edit task"></span>
                 <span class="glyphicon glyphicon-trash" title="Delete task"></span>
