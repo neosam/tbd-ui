@@ -47,25 +47,31 @@ fn buildLog(task_log: &IOLog<TaskLogEntry>) -> String {
             TaskAction::ScheduleTask(ref a_task) => LogReply {
                 hash: hash.as_string(),
                 action: "schedule".to_string(),
-                details: format!("{:?}", a_task),
+                details: vec![format!("{}", a_task.task.title)],
                 timestamp: timestamp
             },
             TaskAction::PoolTask(ref p_task) => LogReply {
                 hash: hash.as_string(),
-                action: "pool".to_string(),
-                details: format!("{:?}", p_task),
+                action: "pooled".to_string(),
+                details: vec![format!("{}", p_task.task.title)],
                 timestamp: timestamp
             },
             TaskAction::CompleteTask(ref a_task) => LogReply {
                 hash: hash.as_string(),
                 action: "complete".to_string(),
-                details: format!("{:?}", a_task),
+                details: vec![format!("{}", a_task.task.title)],
                 timestamp: timestamp
             },
             TaskAction::ActivateTask(ref a_tasks) => LogReply {
                 hash: hash.as_string(),
                 action: "activate".to_string(),
-                details: format!("{:?}", a_tasks),
+                details: {
+                    let mut res = Vec::new();
+                    for a_task in a_tasks {
+                        res.push(a_task.clone().task.title);
+                    }
+                    res
+                },
                 timestamp: timestamp
             }
         });
@@ -100,7 +106,7 @@ fn get_pooled_tasks<T: TaskStatTrait>(task_stat: &T) -> String {
 struct LogReply {
     hash: String,
     action: String,
-    details: String,
+    details: Vec<String>,
     timestamp: i64
 }
 

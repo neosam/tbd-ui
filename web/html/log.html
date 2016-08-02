@@ -11,8 +11,30 @@
         <tbody>
         <tr ng-repeat="entry in mv.entries">
             <td><a ng-click="mv.revert(entry)" href="#">{{entry.printTimestamp}} </a> </td>
-            <td>{{entry.action}}</td>
-            <td>{{entry.details}}</td>
+            <td>
+                <div ng-switch="entry.action">
+                    <div ng-switch-when="schedule">
+                        <span class="glyphicon glyphicon-plus-sign"></span>
+                    </div>
+                    <div ng-switch-when="pooled">
+                        <span class="glyphicon glyphicon-pushpin"></span>
+                    </div>
+                    <div ng-switch-when="complete">
+                        <span class="glyphicon glyphicon-ok-sign"></span>
+                    </div>
+                    <div ng-switch-when="activate">
+                        <span class="glyphicon glyphicon-screenshot"></span>
+                    </div>
+                    <div ng-switch-default>
+                        <span class="glyphicon glyphicon-question-sign"></span>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <ul>
+                    <li ng-repeat="detail in entry.details">{{detail}}</li>
+                </ul>
+            </td>
         </tr>
         </tbody>
     </table>
