@@ -5,7 +5,7 @@ extern crate tbd;
 extern crate time;
 extern crate rand;
 
-use nickel::{Nickel, HttpRouter, JsonBody};
+use nickel::{Nickel, HttpRouter, JsonBody, Options};
 use nickel::StaticFilesHandler;
 use rustc_serialize::json;
 use tbd::{task, tasklog};
@@ -224,6 +224,9 @@ fn main() {
     });
 
     server.utilize(StaticFilesHandler::new("web/"));
+
+    server.options = Options::default()
+        .thread_count(Some(30));
 
     server.listen("0.0.0.0:6767");
 }
