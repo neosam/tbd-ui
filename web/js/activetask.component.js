@@ -73,6 +73,9 @@
                 }
 
                 function handleActiveTasks(data) {
+                    console.log("Cache active tasks");
+                    localStorage.setItem("actives", JSON.stringify(data.data));
+
                     mv.entries = $.each(data.data, function(i, item) {
                         if (item.due_date < 0) {
                             item.rowclass = "danger";
@@ -87,7 +90,13 @@
                     })
                 }
                 function activeTaskLoadFailed() {
-                    console.log("Error when loading active tasks");
+                    console.log("Error when loading active tasks, try offline");
+                    var cachedTasks = localStorage.getItem("actives");
+                    if (cachedTasks !== null) {
+                        handleActiveTasks({
+                            data: JSON.parse(cachedTasks)
+                        });
+                    }
                 }
             }
         }

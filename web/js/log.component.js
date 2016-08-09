@@ -26,6 +26,9 @@
                 }
 
                 function handleLogLoad(data) {
+                    console.log("Cache history log");
+                    localStorage.setItem("histlog", JSON.stringify(data.data));
+
                     mv.entries = $.each(data.data, function (i, item) {
                         var date = new Date(item.timestamp * 1000);
                         var str =
@@ -40,7 +43,13 @@
                     });
                 }
                 function handleLogLoadFailed() {
-                    console.log("Error when loading log");
+                    console.log("Error when loading history log tasks, try offline");
+                    var cachedLog = localStorage.getItem("histlog");
+                    if (cachedLog !== null) {
+                        handleLogLoad({
+                            data: JSON.parse(cachedLog)
+                        });
+                    }
                 }
 
             function revert(entry) {

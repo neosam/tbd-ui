@@ -36,10 +36,19 @@
 
 
                 function handlePooledTasks(data) {
+                    console.log("Cache pooled tasks");
+                    localStorage.setItem("pooled", JSON.stringify(data.data));
+
                     mv.entries = data.data;
                 }
                 function handlePooledTasksFailed() {
-                    console.log("Error loading pooled tasks");
+                    console.log("Error when loading pooled tasks, try offline");
+                    var cachedTasks = localStorage.getItem("pooled");
+                    if (cachedTasks !== null) {
+                        handlePooledTasks({
+                            data: JSON.parse(cachedTasks)
+                        });
+                    }
                 }
 
                 function addPooledTask() {
