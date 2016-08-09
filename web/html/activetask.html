@@ -34,15 +34,21 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">Currently active tasks
+        <span ng-hide="mv.offlineSince === null" class="text-danger"> - Offline since
+            {{mv.offlineSince.getYear() + 1900}}-{{mv.offlineSince.getMonth() + 1}}-{{mv.offlineSince.getDate()}}
+            {{mv.offlineSince.getHours()}}:{{mv.offlineSince.getMinutes()}}:{{mv.offlineSince.getSeconds()}}
+        </span>
         <button type="button"
                 class="btn btn-primary btn-xs pull-right"
-                ng-click="mv.pickActives()">
+                ng-click="mv.pickActives()"
+                ng-show="mv.offlineSince === null">
             Pick
         </button>
         <button type="button"
                 class="btn btn-xs pull-right"
                 data-toggle="modal"
-                data-target="#myPoolModal">
+                data-target="#myPoolModal"
+                ng-show="mv.offlineSince === null">
             Add
         </button></div>
     <table class="table">
@@ -59,7 +65,8 @@
             <td>{{entry.due_date}}</td>
             <td>
                 <span class="glyphicon glyphicon-ok" title="Finish Task"
-                        ng-click="mv.finishTask(entry)"></span>
+                        ng-click="mv.finishTask(entry)"
+                      ng-show="mv.offlineSince === null"ng-show="mv.offlineSince === null"></span>
             </td>
         </tr>
         </tbody>

@@ -45,10 +45,15 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">Tasks in pool
+        <span ng-hide="mv.offlineSince === null" class="text-danger"> - Offline since
+            {{mv.offlineSince.getYear() + 1900}}-{{mv.offlineSince.getMonth() + 1}}-{{mv.offlineSince.getDate()}}
+            {{mv.offlineSince.getHours()}}:{{mv.offlineSince.getMinutes()}}:{{mv.offlineSince.getSeconds()}}
+        </span>
         <button type="button"
                 class="btn btn-primary btn-xs pull-right"
                 data-toggle="modal"
-                data-target="#myModal">
+                data-target="#myModal"
+                ng-show="mv.offlineSince === null">
         Add
     </button> </div>
 
@@ -74,8 +79,8 @@
                 <span class="text-success" ng-show="entry.cooling_until > 0">{{entry.cooling_until}}</span>
             </td>
             <td>
-                <span class="glyphicon glyphicon-pencil" title="Edit task"></span>
-                <span class="glyphicon glyphicon-trash" title="Delete task"></span>
+                <span class="glyphicon glyphicon-pencil" title="Edit task" ng-show="mv.offlineSince === null"></span>
+                <span class="glyphicon glyphicon-trash" title="Delete task" ng-show="mv.offlineSince === null"></span>
             </td>
         </tr>
         </tbody>

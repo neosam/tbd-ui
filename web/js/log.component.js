@@ -25,9 +25,17 @@
                         .catch(handleLogLoadFailed);
                 }
 
-                function handleLogLoad(data) {
-                    console.log("Cache history log");
-                    localStorage.setItem("histlog", JSON.stringify(data.data));
+                function handleLogLoad(data, saveData) {
+                    if (saveData !== true && saveData !== false) {
+                        saveData = true;
+                    }
+                    if (saveData) {
+                        console.log("Cache history log");
+                        localStorage.setItem("histlog", JSON.stringify(data.data));
+                        mv.offlineSince = null;
+                    } else {
+                        mv.offlineSince = new Date(parseInt(localStorage.getItem("last_timestamp")));
+                    }
 
                     mv.entries = $.each(data.data, function (i, item) {
                         var date = new Date(item.timestamp * 1000);
@@ -48,7 +56,7 @@
                     if (cachedLog !== null) {
                         handleLogLoad({
                             data: JSON.parse(cachedLog)
-                        });
+                        }, false);
                     }
                 }
 

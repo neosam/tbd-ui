@@ -17,6 +17,7 @@
                 mv.addActiveTask = addActiveTask;
                 mv.pickActives = pickActives;
                 mv.finishTask = finishTask;
+                mv.offlineSince = null;
                 mv.addTask = {
                     title: '',
                     description: '',
@@ -72,9 +73,18 @@
                     }
                 }
 
-                function handleActiveTasks(data) {
-                    console.log("Cache active tasks");
-                    localStorage.setItem("actives", JSON.stringify(data.data));
+                function handleActiveTasks(data, saveData) {
+                    if (saveData !== true && saveData !== false) {
+                        saveData = true;
+                    }
+                    if (saveData) {
+                        console.log("Cache active tasks");
+                        localStorage.setItem("actives", JSON.stringify(data.data));
+                        localStorage.setItem("last_timestamp", new Date().getTime());
+                        mv.offlineSince = null;
+                    } else {
+                        mv.offlineSince = new Date(parseInt(localStorage.getItem("last_timestamp")));
+                    }
 
                     mv.entries = $.each(data.data, function(i, item) {
                         if (item.due_date < 0) {
@@ -95,7 +105,7 @@
                     if (cachedTasks !== null) {
                         handleActiveTasks({
                             data: JSON.parse(cachedTasks)
-                        });
+                        }, false);
                     }
                 }
             }

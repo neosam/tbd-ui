@@ -24,6 +24,8 @@
                     cool_down: 3,
                     due_days: 3
                 };
+                mv.offlineSince = null;
+
                 mv.addPooledTask = addPooledTask;
                 loadPooledTasks();
 
@@ -35,9 +37,17 @@
                 }
 
 
-                function handlePooledTasks(data) {
-                    console.log("Cache pooled tasks");
-                    localStorage.setItem("pooled", JSON.stringify(data.data));
+                function handlePooledTasks(data, saveData) {
+                    if (saveData !== true && saveData !== false) {
+                        saveData = true;
+                    }
+                    if (saveData) {
+                        console.log("Cache pooled tasks");
+                        localStorage.setItem("pooled", JSON.stringify(data.data));
+                        mv.offlineSince = null;
+                    } else {
+                        mv.offlineSince = new Date(parseInt(localStorage.getItem("last_timestamp")));
+                    }
 
                     mv.entries = data.data;
                 }
@@ -47,7 +57,7 @@
                     if (cachedTasks !== null) {
                         handlePooledTasks({
                             data: JSON.parse(cachedTasks)
-                        });
+                        }, false);
                     }
                 }
 

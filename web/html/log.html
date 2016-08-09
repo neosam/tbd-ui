@@ -1,5 +1,10 @@
 <div class="panel panel-default">
-    <div class="panel-heading">Activity log</div>
+    <div class="panel-heading">Activity log
+        <span ng-hide="mv.offlineSince === null" class="text-danger"> - Offline since
+            {{mv.offlineSince.getYear() + 1900}}-{{mv.offlineSince.getMonth() + 1}}-{{mv.offlineSince.getDate()}}
+            {{mv.offlineSince.getHours()}}:{{mv.offlineSince.getMinutes()}}:{{mv.offlineSince.getSeconds()}}
+        </span>
+    </div>
     <table class="table">
         <thead>
         <tr>
@@ -10,7 +15,12 @@
         </thead>
         <tbody>
         <tr ng-repeat="entry in mv.entries">
-            <td><a ng-click="mv.revert(entry)" href="#">{{entry.printTimestamp}} </a> </td>
+            <td>
+                <a ng-click="mv.revert(entry)"
+                   href="#"
+                   ng-show="mv.offlineSince === null">{{entry.printTimestamp}} </a>
+                <span ng-hide="mv.offlineSince === null">{{entry.printTimestamp}}</span>
+            </td>
             <td>
                 <div ng-switch="entry.action">
                     <div ng-switch-when="schedule">
