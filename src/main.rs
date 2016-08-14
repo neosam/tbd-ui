@@ -40,7 +40,7 @@ fn buildLog(task_log: &IOLog<TaskLogEntry>) -> String {
     let mut res = Vec::<LogReply>::new();
     let mut i = 0;
     for hash in iter {
-        let entry = task_log.get(hash).unwrap();
+        let entry = task_log.get(hash).expect("Could not extract log");
         print!("Process {:?}\n", entry);
         let timestamp = entry.timestamp.to_timespec().sec;
         res.push(match entry.action {
@@ -166,12 +166,12 @@ fn main() {
     server.get("/hello2", middleware!("Hello World2"));
 
     server.get("/active_tasks", middleware! { | req, res |
-        let tasklog = tasklog_active_tasks.lock().unwrap();
+        let tasklog = tasklog_active_tasks.lock().expect("Could not load active tasks");
         get_active_tasks(&*tasklog)
     });
     server.post("/add_active_task", middleware! { | req, res |
         let new_a_task = req.json_as::<NewActiveTask>().unwrap();
-        tasklog_add_active.lock().unwrap().add_active_task(
+        tasklog_add_active.lock().expect("Could not add active task").add_active_task(
                                 new_a_task.title,
                                 new_a_task.description,
                                 new_a_task.factor,
@@ -180,7 +180,7 @@ fn main() {
     });
 
     server.get("/pooled_tasks", middleware! { | req, res |
-        let tasklog = tasklog_pooled_tasks.lock().unwrap();
+        let tasklog = tasklog_pooled_tasks.lock().expect("Could not load pooled tasks");
         get_pooled_tasks(&*tasklog)
     });
 
@@ -210,7 +210,7 @@ fn main() {
     });
 
     server.get("/log", middleware! {
-        let tasklog = tasklog_log.lock().unwrap();
+        let tasklog = tasklog_log.lock().expect("Could not load log enties");
         buildLog(&tasklog.log)
     });
 

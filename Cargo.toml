@@ -1,11 +1,12 @@
 [package]
 name = "tbd-ui"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Simon Goller <neosam+github@posteo.de>"]
 
 [dependencies]
 nickel = "*"
 rustc-serialize = "0.3"
-tbd = { git = "https://github.com/neosam/tbd.git", tag = "v0.2" }
+# tbd = { git = "https://github.com/neosam/tbd.git", branch = "0.3" }
+tbd = { path = "../tbd" }
 time = "0.1"
 rand = "0.3"
