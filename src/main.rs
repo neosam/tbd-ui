@@ -1,4 +1,6 @@
 #[macro_use] extern crate nickel;
+#[macro_use] extern crate log;
+extern crate env_logger;
 //#[macro_use] extern crate json;
 extern crate rustc_serialize;
 extern crate tbd;
@@ -12,7 +14,7 @@ use tbd::{task, tasklog};
 use tbd::task::{ActiveTask, PooledTask, TaskStatTrait};
 use tbd::tasklog::{TaskLog, TaskLogEntry, TaskAction};
 use tbd::iolog::IOLog;
-use tbd::log::{Log, LogIteratorHash};
+use tbd::logger::{Log, LogIteratorHash};
 use std::sync::{Arc, Mutex};
 use time::{Tm, Duration};
 use rand::StdRng;
@@ -41,7 +43,7 @@ fn buildLog(task_log: &IOLog<TaskLogEntry>) -> String {
     let mut i = 0;
     for hash in iter {
         let entry = task_log.get(hash).expect("Could not extract log");
-        print!("Process {:?}\n", entry);
+        trace!("Process {:?}\n", entry);
         let timestamp = entry.timestamp.to_timespec().sec;
         res.push(match entry.action {
             TaskAction::ScheduleTask(ref a_task) => LogReply {
@@ -150,6 +152,9 @@ struct TitleOnly {
 }
 
 fn main() {
+    env_logger::init().unwrap();
+
+    info!("Initalize");
     let mut server = Nickel::new();
     let mut tasklog = TaskLog::new(".tbd".to_string());
     tasklog.load_head();
@@ -166,10 +171,12 @@ fn main() {
     server.get("/hello2", middleware!("Hello World2"));
 
     server.get("/active_tasks", middleware! { | req, res |
+        info!("/active_tasks called");
         let tasklog = tasklog_active_tasks.lock().expect("Could not load active tasks");
         get_active_tasks(&*tasklog)
     });
     server.post("/add_active_task", middleware! { | req, res |
+        info!("/add_active_task called");
         let new_a_task = req.json_as::<NewActiveTask>().unwrap();
         tasklog_add_active.lock().expect("Could not add active task").add_active_task(
                                 new_a_task.title,
@@ -180,11 +187,13 @@ fn main() {
     });
 
     server.get("/pooled_tasks", middleware! { | req, res |
+        info!("/pooled_tasks called");
         let tasklog = tasklog_pooled_tasks.lock().expect("Could not load pooled tasks");
         get_pooled_tasks(&*tasklog)
     });
 
     server.post("/add_pooled_task", middleware! { | req, res |
+        info!("/add_pooled_task called");
         let new_p_task = req.json_as::<NewPooledTask>().unwrap();
         tasklog_add_pooled.lock().unwrap().add_pooled_task(
             new_p_task.title,
@@ -198,24 +207,29 @@ fn main() {
     });
 
     server.get("/pick_actives", middleware! { | req, res |
+        info!("/pick_actives called");
         let mut rng = StdRng::new().unwrap();
         tasklog_pick_actives.lock().unwrap().activate(&mut rng).unwrap();
         "true"
     });
 
     server.post("/finish", middleware! { | req, res |
+        info!("/finish called");
         let obj = req.json_as::<TitleOnly>().unwrap();
         tasklog_finish.lock().unwrap().mark_done(obj.title);
         "true"
     });
 
     server.get("/log", middleware! {
+        info!("/log called");
         let tasklog = tasklog_log.lock().expect("Could not load log enties");
         buildLog(&tasklog.log)
     });
 
     server.get("/revert/:hash", middleware! { | request |
+        info!("/revert/:hash called");
         let hash_str = request.param("hash");
+        info!(":hash = {:?}", hash_str);
         let hash = Hash::from_string(hash_str.unwrap().to_string());
         let mut tasklog = tasklog_revert.lock().unwrap();
         tasklog.log.reset_head(&hash);

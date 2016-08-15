@@ -2,10 +2,12 @@
 name = "tbd-ui"
 version = "0.3.0"
 dependencies = [
+ "env_logger 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "nickel 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-serialize 0.3.19 (registry+https://github.com/rust-lang/crates.io-index)",
- "tbd 0.3.0-alpha",
+ "tbd 0.3.0-alpha (git+https://github.com/neosam/tbd.git?branch=0.3)",
  "time 0.1.35 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -29,6 +31,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "time 0.1.35 (registry+https://github.com/rust-lang/crates.io-index)",
  "url 1.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "env_logger"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "log 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex 0.1.73 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -250,8 +261,10 @@ dependencies = [
 [[package]]
 name = "tbd"
 version = "0.3.0-alpha"
+source = "git+https://github.com/neosam/tbd.git?branch=0.3#68d2a7451a23a58de102286babfe0bf24c9d9045"
 dependencies = [
  "byteorder 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "rust-crypto 0.2.36 (registry+https://github.com/rust-lang/crates.io-index)",
  "time 0.1.35 (registry+https://github.com/rust-lang/crates.io-index)",
