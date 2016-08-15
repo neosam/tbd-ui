@@ -261,7 +261,7 @@ dependencies = [
 [[package]]
 name = "tbd"
 version = "0.3.0-alpha"
-source = "git+https://github.com/neosam/tbd.git?branch=0.3#68d2a7451a23a58de102286babfe0bf24c9d9045"
+source = "git+https://github.com/neosam/tbd.git?branch=0.3#b9fd9f7482166afb35b1bc1f0928cdffba86eeb0"
 dependencies = [
  "byteorder 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
