@@ -57,23 +57,19 @@
         Add
     </button> </div>
 
-    <table class="table">
+    <table class="table table-responsive">
         <thead>
         <tr>
             <th>Title</th>
-            <th>Days to complete</th>
-            <th>Propability</th>
-            <th>Cool down</th>
-            <th>Cooling until</th>
-            <th>Actions</th>
+            <th>Days / Cool / Prop</th>
+            <th>Cool until</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="entry in mv.entries">
             <td >{{entry.title}}</td>
-            <td>{{entry.due_days}}</td>
-            <td>{{entry.propability * 100 | number: 0}}%</td>
-            <td>{{entry.cool_down}}</td>
+            <td>{{entry.due_days}} / {{entry.cool_down}} / {{entry.propability * 100 | number: 0}}%</td>
             <td>
                 <span class="text-danger" ng-show="entry.cooling_until <= 0">Ready</span>
                 <span class="text-success" ng-show="entry.cooling_until > 0">{{entry.cooling_until}}</span>
