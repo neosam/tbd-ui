@@ -67,6 +67,9 @@
                 <span class="glyphicon glyphicon-ok" title="Finish Task"
                         ng-click="mv.finishTask(entry)"
                       ng-show="mv.offlineSince === null"ng-show="mv.offlineSince === null"></span>
+                <span class="glyphicon glyphicon-ok" title="Finish Task"
+                      ng-click="mv.offlineFinishTask(entry)"
+                      ng-show="mv.offlineSince === null"ng-hide="mv.offlineSince === null"></span>
             </td>
         </tr>
         </tbody>
