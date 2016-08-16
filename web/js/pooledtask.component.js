@@ -28,6 +28,7 @@
 
                 mv.addPooledTask = addPooledTask;
                 loadPooledTasks();
+                var interval = setInterval(loadPooledTasks, 60000);
 
 
                 function loadPooledTasks() {

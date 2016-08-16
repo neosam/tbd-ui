@@ -17,6 +17,7 @@
                 mv.revert = revert;
 
                 loadLog();
+                var interval = setInterval(loadLog, 60000);
 
 
                 function loadLog() {

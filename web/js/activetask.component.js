@@ -27,6 +27,8 @@
                 };
                 loadTasks();
 
+                var interval = setInterval(loadTasks, 60000);
+
 
                 function loadTasks() {
                     dataservice.getActiveTasks()
